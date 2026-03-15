@@ -11,6 +11,14 @@
 namespace py = pybind11;
 using namespace MOBase;
 
+namespace {
+#ifdef _WIN32
+    inline const QString separator = QStringLiteral("\\");
+#else
+    inline const QString separator = QStringLiteral("/");
+#endif
+}  // namespace
+
 namespace mo2::detail {
 
     // filetree implementation for testing purpose
@@ -128,9 +136,9 @@ namespace mo2::python {
                 },
                 py::arg("suffix"))
             .def("parent", py::overload_cast<>(&FileTreeEntry::parent))
-            .def("path", &FileTreeEntry::path, py::arg("sep") = QDir::separator())
+            .def("path", &FileTreeEntry::path, py::arg("sep") = separator)
             .def("pathFrom", &FileTreeEntry::pathFrom, py::arg("tree"),
-                 py::arg("sep") = QDir::separator())
+                 py::arg("sep") = separator)
 
             // Mutable operation:
             .def("detach", &FileTreeEntry::detach)
@@ -179,7 +187,7 @@ namespace mo2::python {
             "find", py::overload_cast<QString, IFileTree::FileTypes>(&IFileTree::find),
             py::arg("path"), py::arg("type") = FILE_OR_DIRECTORY);
         iFileTreeClass.def("pathTo", &IFileTree::pathTo, py::arg("entry"),
-                           py::arg("sep") = QDir::separator());
+                           py::arg("sep") = separator);
 
         iFileTreeClass.def(
             "walk",
@@ -187,7 +195,7 @@ namespace mo2::python {
                 std::function<IFileTree::WalkReturn(
                     QString const&, std::shared_ptr<const FileTreeEntry>)>,
                 QString>(&IFileTree::walk, py::const_),
-            py::arg("callback"), py::arg("sep") = QDir::separator());
+            py::arg("callback"), py::arg("sep") = separator);
 
         // the walk() and glob() generator version are free functions in C++ due to the
         // conditional nature, but in Python, it makes more sense to have them as method
