@@ -25,16 +25,23 @@ target_sources(python-tests
 		test_shared_cpp_owner.py
 )
 
+if(UNIX)
+    set(pytest "pytest")
+    set(env_string "PYTHONPATH=set:${PYLIB_DIR}:$<TARGET_FILE_DIR:mobase>;UIBASE_PATH=set:${UIBASE_PATH}")
+else()
+    set(pytest "pytest.exe")
+    set(env_string "PYTHONPATH=set:${PYLIB_DIR}\\;$<TARGET_FILE_DIR:mobase>;UIBASE_PATH=set:${UIBASE_PATH}")
+endif()
+
 add_test(NAME pytest
-	COMMAND ${CMAKE_CURRENT_BINARY_DIR}/pylibs/bin/pytest.exe ${CMAKE_CURRENT_SOURCE_DIR} -s
+	COMMAND ${CMAKE_CURRENT_BINARY_DIR}/pylibs/bin/${pytest} ${CMAKE_CURRENT_SOURCE_DIR} -s
 )
 
 set_tests_properties(pytest
 	PROPERTIES
 	DEPENDS python-tests
 	ENVIRONMENT_MODIFICATION
-	"PYTHONPATH=set:${PYLIB_DIR}\\;$<TARGET_FILE_DIR:mobase>;\
-UIBASE_PATH=set:${UIBASE_PATH}"
+	"${env_string}"
 )
 
 mo2_python_pip_install(python-tests
@@ -67,7 +74,7 @@ foreach (test_file ${test_files})
 	endif()
 
 	target_link_libraries(${target} PRIVATE
-		mo2::uibase Qt6::Core Qt6::Widgets  pybind11::qt pybind11::utils GTest::gmock)
+		mo2::uibase Qt6::Core Qt6::Widgets  pybind11::qt pybind11::utils GTest::gmock $<$<PLATFORM_ID:Linux>:Python::Python>)
 
 	target_include_directories(${target}
     	PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../mocks)

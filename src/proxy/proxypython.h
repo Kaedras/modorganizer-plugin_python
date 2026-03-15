@@ -28,6 +28,10 @@ along with python proxy plugin.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <pythonrunner.h>
 
+#ifdef __unix__
+using HMODULE = void*;
+#endif
+
 class ProxyPython : public QObject,
                     public MOBase::IPluginProxy,
                     public MOBase::IPluginDiagnose {

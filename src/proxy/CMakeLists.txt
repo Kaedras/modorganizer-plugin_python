@@ -4,7 +4,19 @@ find_package(mo2-uibase CONFIG REQUIRED)
 
 set(PLUGIN_NAME "plugin_python")
 
-add_library(proxy SHARED proxypython.cpp proxypython.h)
+if(WIN32)
+    set(LIB_DIR dlls)
+    set(os_name win32)
+else()
+    set(LIB_DIR lib)
+    set(os_name linux)
+endif()
+
+add_library(proxy SHARED
+        proxypython.cpp
+        ${os_name}/proxypython_${os_name}.cpp
+        proxypython.h
+)
 mo2_configure_plugin(proxy
     NO_SOURCES
     WARNINGS 4
@@ -22,8 +34,10 @@ mo2_install_plugin(proxy FOLDER)
 set(PLUGIN_PYTHON_DIR bin/plugins/${PLUGIN_NAME})
 
 # install runner
-target_link_options(proxy PRIVATE "/DELAYLOAD:runner.dll")
-install(FILES $<TARGET_FILE:runner> DESTINATION ${PLUGIN_PYTHON_DIR}/dlls)
+if (WIN32)
+    target_link_options(proxy PRIVATE "/DELAYLOAD:runner.dll")
+endif()
+install(FILES $<TARGET_FILE:runner> DESTINATION ${PLUGIN_PYTHON_DIR}/${LIB_DIR})
 
 # translations (custom location)
 mo2_add_translations(proxy
@@ -34,30 +48,34 @@ mo2_add_translations(proxy
     ${CMAKE_CURRENT_SOURCE_DIR}/../mobase
     ${CMAKE_CURRENT_SOURCE_DIR}/../pybind11-qt)
 
-# install DLLs files needed
-set(DLL_DIRS ${PLUGIN_PYTHON_DIR}/dlls)
-file(GLOB dlls_to_install
-	${Python_HOME}/dlls/libffi*.dll
-	${Python_HOME}/dlls/sqlite*.dll
-	${Python_HOME}/dlls/libssl*.dll
-	${Python_HOME}/dlls/libcrypto*.dll
-	${Python_HOME}/python${Python_VERSION_MAJOR}*.dll)
-install(FILES ${dlls_to_install} DESTINATION ${DLL_DIRS})
+if(WIN32)
+    # install DLLs files needed
+    set(DLL_DIRS ${PLUGIN_PYTHON_DIR}/dlls)
+    file(GLOB dlls_to_install
+        ${Python_HOME}/dlls/libffi*.dll
+        ${Python_HOME}/dlls/sqlite*.dll
+        ${Python_HOME}/dlls/libssl*.dll
+        ${Python_HOME}/dlls/libcrypto*.dll
+        ${Python_HOME}/python${Python_VERSION_MAJOR}*.dll)
+    install(FILES ${dlls_to_install} DESTINATION ${DLL_DIRS})
+endif()
 
 # install Python .pyd files
 set(PYLIB_DIR ${PLUGIN_PYTHON_DIR}/libs)
 file(GLOB libs_to_install ${Python_DLL_DIR}/*.pyd)
 install(FILES ${libs_to_install} DESTINATION ${PYLIB_DIR})
 
-# generate + install standard library
-set(pythoncore_zip "${CMAKE_CURRENT_BINARY_DIR}/pythoncore.zip")
-add_custom_command(
-    TARGET proxy POST_BUILD
-    COMMAND ${Python_EXECUTABLE}
-        "${CMAKE_CURRENT_SOURCE_DIR}\\build_pythoncore.py"
-        ${pythoncore_zip}
-    )
-install(FILES ${pythoncore_zip} DESTINATION ${PYLIB_DIR})
+if(WIN32)
+    # generate + install standard library
+    set(pythoncore_zip "${CMAKE_CURRENT_BINARY_DIR}/pythoncore.zip")
+    add_custom_command(
+        TARGET proxy POST_BUILD
+        COMMAND ${Python_EXECUTABLE}
+            "${CMAKE_CURRENT_SOURCE_DIR}/build_pythoncore.py"
+            ${pythoncore_zip}
+        )
+    install(FILES ${pythoncore_zip} DESTINATION ${PYLIB_DIR})
+endif()
 
 # install mobase
 install(TARGETS mobase DESTINATION ${PYLIB_DIR})

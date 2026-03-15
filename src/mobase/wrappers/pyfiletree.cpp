@@ -179,7 +179,7 @@ namespace mo2::python {
             "find", py::overload_cast<QString, IFileTree::FileTypes>(&IFileTree::find),
             py::arg("path"), py::arg("type") = FILE_OR_DIRECTORY);
         iFileTreeClass.def("pathTo", &IFileTree::pathTo, py::arg("entry"),
-                           py::arg("sep") = "\\");
+                           py::arg("sep") = QDir::separator());
 
         iFileTreeClass.def(
             "walk",
@@ -187,7 +187,7 @@ namespace mo2::python {
                 std::function<IFileTree::WalkReturn(
                     QString const&, std::shared_ptr<const FileTreeEntry>)>,
                 QString>(&IFileTree::walk, py::const_),
-            py::arg("callback"), py::arg("sep") = "\\");
+            py::arg("callback"), py::arg("sep") = QDir::separator());
 
         // the walk() and glob() generator version are free functions in C++ due to the
         // conditional nature, but in Python, it makes more sense to have them as method

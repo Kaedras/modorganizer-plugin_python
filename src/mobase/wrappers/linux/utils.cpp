@@ -1,6 +1,6 @@
-#include "wrappers.h"
+#include "../wrappers.h"
 
-#include "../pybind11_all.h"
+#include "../../pybind11_all.h"
 
 #include <uibase/report.h>
 #include <uibase/utility.h>
@@ -22,7 +22,7 @@ namespace mo2::python {
         m.def(
             "getKnownFolder",
             [](std::size_t knownFolderId, QString what) {
-                return getKnownFolder(KNOWN_FOLDERS.at(knownFolderId).guid, what);
+                return getKnownFolder(KNOWN_FOLDERS.at(knownFolderId).id, what);
             },
             py::arg("known_folder"), py::arg("what") = "");
 
@@ -30,7 +30,7 @@ namespace mo2::python {
             "getOptionalKnownFolder",
             [](std::size_t knownFolderId) {
                 const auto r =
-                    getOptionalKnownFolder(KNOWN_FOLDERS.at(knownFolderId).guid);
+                    getOptionalKnownFolder(KNOWN_FOLDERS.at(knownFolderId).id);
                 return r.isEmpty() ? py::none{} : py::cast(r);
             },
             py::arg("known_folder"));

@@ -10,12 +10,16 @@
 
 #include "MockOrganizer.h"
 
+#include <uibase/log.h>
+
 using namespace MOBase;
 
 using ::testing::ElementsAre;
 
 TEST(IPluginDiagnose, Simple)
 {
+    log::createDefault(log::LoggerConfiguration{});
+
     const auto plugins_folder = QString(std::getenv("PLUGIN_DIR"));
 
     auto runner = mo2::python::createPythonRunner();

@@ -30,7 +30,11 @@ namespace mo2::python {
 
             static QString from(std::filesystem::path const& path)
             {
+#ifdef _WIN32
                 return QString::fromStdWString(path.native());
+#else
+                return QString::fromStdString(path.native());
+#endif
             }
 
             static QString from(QFileInfo const& fileInfo)

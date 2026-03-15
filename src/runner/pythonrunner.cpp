@@ -3,8 +3,6 @@
 #pragma warning(disable : 4100)
 #pragma warning(disable : 4996)
 
-#include <Windows.h>
-
 #include <algorithm>
 
 #include <QCoreApplication>
@@ -80,7 +78,11 @@ namespace mo2::python {
         }
 
         try {
+#ifdef __unix__
+            static const char* argv0 = "ModOrganizer";
+#else
             static const char* argv0 = "ModOrganizer.exe";
+#endif
 
             // set the module search paths
             //
@@ -92,7 +94,8 @@ namespace mo2::python {
                 // what we want, so simply parsing the path ourselve
                 //
                 if (auto* pythonPath = std::getenv("PYTHONPATH")) {
-                    for (auto& path : QString::fromStdString(pythonPath).split(";")) {
+                    for (auto& path : QString::fromStdString(pythonPath)
+                                          .split(QDir::listSeparator())) {
                         paths.push_back(
                             std::filesystem::path{path.trimmed().toStdWString()});
                     }
@@ -115,7 +118,7 @@ namespace mo2::python {
                 config.module_search_paths_set = 1;
                 for (auto const& path : paths) {
                     PyWideStringList_Append(&config.module_search_paths,
-                                            absolute(path).native().c_str());
+                                            absolute(path).wstring().c_str());
                 }
             }
 
@@ -155,12 +158,18 @@ namespace mo2::python {
             return false;
         }
     }
-
+#ifdef _WIN32
     void PythonRunner::addDllSearchPath(std::filesystem::path const& dllPath)
     {
         py::gil_scoped_acquire lock;
         py::module_::import("os").attr("add_dll_directory")(absolute(dllPath));
     }
+#else
+    void PythonRunner::addDllSearchPath(std::filesystem::path const& dllPath)
+    {
+#warning STUB
+    }
+#endif
 
     void PythonRunner::ensureFolderInPath(QString folder)
     {

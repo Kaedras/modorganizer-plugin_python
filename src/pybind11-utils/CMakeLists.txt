@@ -21,3 +21,7 @@ target_link_libraries(pybind11-utils PUBLIC pybind11::pybind11)
 target_include_directories(pybind11-utils PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 add_library(pybind11::utils ALIAS pybind11-utils)
+
+if(UNIX)
+    target_compile_options(pybind11-utils PRIVATE -fPIC)
+endif()

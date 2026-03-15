@@ -520,6 +520,12 @@ namespace mo2::python {
             using vfs_map = QMap<QString, QStringList>;
             PYBIND11_OVERRIDE(vfs_map, IPluginGame, getModMappings, );
         }
+#ifdef __unix__
+        void setPrefixPath(const QString& path) override
+        {
+            PYBIND11_OVERRIDE_PURE(void, IPluginGame, setPrefixPath, path);
+        }
+#endif
     };
 
 }  // namespace mo2::python

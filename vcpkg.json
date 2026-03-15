@@ -25,8 +25,8 @@
       },
       {
         "kind": "git",
-        "repository": "https://github.com/ModOrganizer2/vcpkg-registry",
-        "baseline": "228cda39fe9d1eeed789c0ef64fd1235dab3b11e",
+        "repository": "https://github.com/Kaedras/vcpkg-registry",
+        "baseline": "ec3b95c5dca44c7a5058d168e6e368722cc76de8",
         "packages": ["mo2-*", "pybind11", "spdlog"]
       }
     ]

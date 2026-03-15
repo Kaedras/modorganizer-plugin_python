@@ -13,8 +13,11 @@ mobase_tests_dir = Path(__file__).parent.parent.joinpath(
 
 site.addsitedir(str(mobase_tests_dir.parent))
 
-os.add_dll_directory(str(Path(cast(str, os.getenv("QT_ROOT"))).joinpath("bin")))
-os.add_dll_directory(str(os.getenv("UIBASE_PATH")))
+if sys.platform == 'win32':
+    os.add_dll_directory(str(Path(cast(str, os.getenv("QT_ROOT"))).joinpath("bin")))
+    os.add_dll_directory(str(os.getenv("UIBASE_PATH")))
+else:
+    os.putenv("LD_LIBRARY_PATH", str(os.getenv("UIBASE_PATH")))
 
 from PyQt6.QtWidgets import QApplication  # noqa: E402
 
