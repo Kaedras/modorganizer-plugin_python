@@ -11,7 +11,19 @@ env:
 
 jobs:
   build:
-    runs-on: windows-2022
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ windows-2022, ubuntu-24.04 ]
+        include:
+          - os: windows-2022
+            build_dir: vsbuild
+            target: INSTALL
+          - os: ubuntu-24.04
+            build_dir: build
+            target: install
+
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/setup-python@v5
         with:
@@ -19,20 +31,20 @@ jobs:
 
       - name: Configure Plugin Python
         id: configure-plugin-python
-        uses: ModOrganizer2/build-with-mob-action@master
+        uses: Kaedras/build-with-mob-action@master
         with:
           mo2-dependencies: uibase
           mo2-skip-build: true
 
       - name: Build Plugin Python
         working-directory: ${{ steps.configure-plugin-python.outputs.working-directory }}
-        run: cmake --build vsbuild --config RelWithDebInfo --verbose `
+        run: cmake --build ${{ matrix.build_dir }} --config RelWithDebInfo --verbose `
           --target python-tests --target runner-tests --target proxy
 
       - name: Test Plugin Python
         working-directory: ${{ steps.configure-plugin-python.outputs.working-directory }}
-        run: ctest --test-dir vsbuild -C RelWithDebInfo --output-on-failure
+        run: ctest --test-dir ${{ matrix.build_dir }} -C RelWithDebInfo --output-on-failure
 
       - name: Install Plugin Python
         working-directory: ${{ steps.configure-plugin-python.outputs.working-directory }}
-        run: cmake --build vsbuild --config RelWithDebInfo --target INSTALL
+        run: cmake --build ${{ matrix.build_dir }} --config RelWithDebInfo --target ${{ matrix.target }}
