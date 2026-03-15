@@ -69,7 +69,9 @@ install(FILES ${libs_to_install} DESTINATION ${PYLIB_DIR})
 set(pythoncore_zip "${CMAKE_CURRENT_BINARY_DIR}/pythoncore.zip")
 add_custom_command(
     TARGET proxy POST_BUILD
-    COMMAND ${Python_EXECUTABLE}
+    COMMAND
+        ${CMAKE_COMMAND} -E env $<IF:${UNIX},PYTHONPYCACHEPREFIX=/tmp/pycache,>
+        ${Python_EXECUTABLE}
         "${CMAKE_CURRENT_SOURCE_DIR}/build_pythoncore.py"
         ${pythoncore_zip}
     )
