@@ -38,8 +38,7 @@ jobs:
 
       - name: Build Plugin Python
         working-directory: ${{ steps.configure-plugin-python.outputs.working-directory }}
-        run: cmake --build ${{ matrix.build_dir }} --config RelWithDebInfo --verbose `
-          --target python-tests --target runner-tests --target proxy
+        run: cmake --build ${{ matrix.build_dir }} --config RelWithDebInfo --verbose --target python-tests --target runner-tests --target proxy
 
       - name: Test Plugin Python
         working-directory: ${{ steps.configure-plugin-python.outputs.working-directory }}
