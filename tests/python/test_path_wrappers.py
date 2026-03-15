@@ -24,6 +24,7 @@ def test_filepath_wrappers():
         # fixme: STUB!
         pass
 
+
 def test_executableinfo():
     info = mobase.ExecutableInfo("exe", QFileInfo(sys.executable))
     assert info.binary() == QFileInfo(sys.executable)
