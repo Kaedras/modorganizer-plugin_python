@@ -36,6 +36,10 @@ jobs:
           mo2-dependencies: uibase
           mo2-skip-build: true
 
+      - name: Install additional dependencies
+        if: ${{ runner.os == 'Linux' }}
+        run: sudo apt-get update && sudo apt-get install --no-install-recommends -y libxcb-cursor0
+
       - name: Build Plugin Python
         working-directory: ${{ steps.configure-plugin-python.outputs.working-directory }}
         run: cmake --build ${{ matrix.build_dir }} --config RelWithDebInfo --verbose --target python-tests --target runner-tests --target proxy
