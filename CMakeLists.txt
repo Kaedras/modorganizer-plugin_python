@@ -26,9 +26,13 @@ set(CMAKE_MAP_IMPORTED_CONFIG_MINSIZEREL ${_CMAKE_MAP_IMPORTED_CONFIG_MINSIZEREL
 set(CMAKE_MAP_IMPORTED_CONFIG_RELWITHDEBINFO ${_CMAKE_MAP_IMPORTED_CONFIG_RELWITHDEBINFO})
 set(CMAKE_MAP_IMPORTED_CONFIG_RELEASE ${_CMAKE_MAP_IMPORTED_CONFIG_RELEASE})
 
-get_filename_component(Python_HOME ${Python_EXECUTABLE} PATH)
-set(Python_DLL_DIR "${Python_HOME}/DLLs")
-set(Python_LIB_DIR "${Python_HOME}/Lib")
+if (WIN32)
+    get_filename_component(Python_HOME ${Python_EXECUTABLE} PATH)
+    set(Python_DLL_DIR "${Python_HOME}/DLLs")
+    set(Python_LIB_DIR "${Python_HOME}/Lib")
+else()
+    set(Python_HOME "/lib/python${Python_VERSION_MAJOR}.${Python_VERSION_MINOR}")
+endif()
 
 mo2_python_install_pyqt()
 

@@ -58,8 +58,7 @@ mo2_python_pip_install(runner-tests
 add_dependencies(runner-tests mobase)
 
 if(UNIX)
-    set(PYTHONPATH "${PYLIB_DIR}:$<TARGET_FILE_DIR:mobase>")
-#    set(PYTHONPATH "${PYLIB_DIR}:$<TARGET_FILE_DIR:mobase>:${Python_DLL_DIR}:${Python_LIB_DIR}")
+    set(PYTHONPATH "${PYLIB_DIR}:$<TARGET_FILE_DIR:mobase>:${Python_HOME}")
 else()
     set(PYTHONPATH "${PYLIB_DIR}\\;$<TARGET_FILE_DIR:mobase>\\;${Python_DLL_DIR}\\;${Python_LIB_DIR}")
 endif()
