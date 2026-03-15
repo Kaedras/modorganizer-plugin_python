@@ -128,9 +128,9 @@ namespace mo2::python {
                 },
                 py::arg("suffix"))
             .def("parent", py::overload_cast<>(&FileTreeEntry::parent))
-            .def("path", &FileTreeEntry::path, py::arg("sep") = "\\")
+            .def("path", &FileTreeEntry::path, py::arg("sep") = QDir::separator())
             .def("pathFrom", &FileTreeEntry::pathFrom, py::arg("tree"),
-                 py::arg("sep") = "\\")
+                 py::arg("sep") = QDir::separator())
 
             // Mutable operation:
             .def("detach", &FileTreeEntry::detach)
