@@ -36,9 +36,9 @@ jobs:
           mo2-dependencies: uibase
           mo2-skip-build: true
 
-      - name: Install additional dependencies
+      - name: Set QT_QPA_PLATFORM
         if: ${{ runner.os == 'Linux' }}
-        run: sudo apt-get update && sudo apt-get install --no-install-recommends -y libxcb-cursor0
+        run: echo "QT_QPA_PLATFORM=offscreen" >> $GITHUB_ENV
 
       - name: Build Plugin Python
         working-directory: ${{ steps.configure-plugin-python.outputs.working-directory }}
