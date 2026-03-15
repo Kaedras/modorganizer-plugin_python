@@ -13,7 +13,7 @@ mobase_tests_dir = Path(__file__).parent.parent.joinpath(
 
 site.addsitedir(str(mobase_tests_dir.parent))
 
-if sys.platform == 'win32':
+if sys.platform == "win32":
     os.add_dll_directory(str(Path(cast(str, os.getenv("QT_ROOT"))).joinpath("bin")))
     os.add_dll_directory(str(os.getenv("UIBASE_PATH")))
 else:
