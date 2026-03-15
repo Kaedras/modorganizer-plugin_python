@@ -65,17 +65,15 @@ set(PYLIB_DIR ${PLUGIN_PYTHON_DIR}/libs)
 file(GLOB libs_to_install ${Python_DLL_DIR}/*.pyd)
 install(FILES ${libs_to_install} DESTINATION ${PYLIB_DIR})
 
-if(WIN32)
-    # generate + install standard library
-    set(pythoncore_zip "${CMAKE_CURRENT_BINARY_DIR}/pythoncore.zip")
-    add_custom_command(
-        TARGET proxy POST_BUILD
-        COMMAND ${Python_EXECUTABLE}
-            "${CMAKE_CURRENT_SOURCE_DIR}/build_pythoncore.py"
-            ${pythoncore_zip}
-        )
-    install(FILES ${pythoncore_zip} DESTINATION ${PYLIB_DIR})
-endif()
+# generate + install standard library
+set(pythoncore_zip "${CMAKE_CURRENT_BINARY_DIR}/pythoncore.zip")
+add_custom_command(
+    TARGET proxy POST_BUILD
+    COMMAND ${Python_EXECUTABLE}
+        "${CMAKE_CURRENT_SOURCE_DIR}/build_pythoncore.py"
+        ${pythoncore_zip}
+    )
+install(FILES ${pythoncore_zip} DESTINATION ${PYLIB_DIR})
 
 # install mobase
 install(TARGETS mobase DESTINATION ${PYLIB_DIR})
