@@ -3,13 +3,19 @@
 #include "../pybind11_all.h"
 
 #include <format>
+#include <memory>
 
+#include <pybind11_utils/generator.h>
 #include <uibase/executableinfo.h>
 #include <uibase/filemapping.h>
 #include <uibase/game_features/igamefeatures.h>
 #include <uibase/guessedvalue.h>
 #include <uibase/idownloadmanager.h>
+#include <uibase/iexecutable.h>
+#include <uibase/iexecutableslist.h>
 #include <uibase/iinstallationmanager.h>
+#include <uibase/iinstance.h>
+#include <uibase/iinstancemanager.h>
 #include <uibase/imodinterface.h>
 #include <uibase/imodrepositorybridge.h>
 #include <uibase/imoinfo.h>
@@ -197,6 +203,27 @@ namespace mo2::python {
             .def("forced", &ExecutableForcedLoadSetting::forced)
             .def("library", &ExecutableForcedLoadSetting::library)
             .def("process", &ExecutableForcedLoadSetting::process);
+
+        py::class_<IExecutable>(m, "IExecutable")
+            .def("title", &IExecutable::title)
+            .def("binaryInfo", &IExecutable::binaryInfo)
+            .def("arguments", &IExecutable::arguments)
+            .def("steamAppID", &IExecutable::steamAppID)
+            .def("workingDirectory", &IExecutable::workingDirectory)
+            .def("isShownOnToolbar", &IExecutable::isShownOnToolbar)
+            .def("usesOwnIcon", &IExecutable::usesOwnIcon)
+            .def("minimizeToSystemTray", &IExecutable::minimizeToSystemTray)
+            .def("hide", &IExecutable::hide);
+
+        py::class_<IExecutablesList>(m, "IExecutablesList")
+            .def("executables",
+                 [](IExecutablesList* executablesList) {
+                     return make_generator(executablesList->executables(),
+                                           py::return_value_policy::reference);
+                 })
+            .def("getByTitle", &IExecutablesList::getByTitle, "title"_a)
+            .def("getByBinary", &IExecutablesList::getByBinary, "info"_a)
+            .def("titleExists", &IExecutablesList::contains, "title"_a);
     }
 
     void add_modinterface_classes(py::module_ m)
@@ -536,6 +563,7 @@ namespace mo2::python {
         py::class_<IOrganizer>(m, "IOrganizer")
             .def("createNexusBridge", &IOrganizer::createNexusBridge,
                  py::return_value_policy::reference)
+            .def("instanceName", &IOrganizer::instanceName)
             .def("profileName", &IOrganizer::profileName)
             .def("profilePath", &IOrganizer::profilePath)
             .def("downloadsPath", &IOrganizer::downloadsPath)
@@ -618,14 +646,20 @@ namespace mo2::python {
 
             .def("virtualFileTree", &IOrganizer::virtualFileTree)
 
+            .def("instanceManager", &IOrganizer::instanceManager,
+                 py::return_value_policy::reference)
             .def("downloadManager", &IOrganizer::downloadManager,
                  py::return_value_policy::reference)
             .def("pluginList", &IOrganizer::pluginList,
                  py::return_value_policy::reference)
             .def("modList", &IOrganizer::modList, py::return_value_policy::reference)
+            .def("executablesList", &IOrganizer::executablesList,
+                 py::return_value_policy::reference)
             .def("gameFeatures", &IOrganizer::gameFeatures,
                  py::return_value_policy::reference)
-            .def("profile", &IOrganizer::profile, py::return_value_policy::reference)
+            .def("profile", &IOrganizer::profile)
+            .def("profileNames", &IOrganizer::profileNames)
+            .def("getProfile", &IOrganizer::getProfile, "name"_a)
 
             // custom implementation for startApplication and
             // waitForApplication because 1) HANDLE (= void*) is not properly
@@ -769,6 +803,20 @@ namespace mo2::python {
             .def_static("getPluginDataPath", &IOrganizer::getPluginDataPath);
     }
 
+    void add_iinstance_manager_classes(py::module_ m)
+    {
+        py::class_<IInstance, std::shared_ptr<IInstance>>(m, "IInstance")
+            .def("displayName", &IInstance::displayName)
+            .def("gameName", &IInstance::gameName)
+            .def("gameDirectory", &IInstance::gameDirectory)
+            .def("isPortable", &IInstance::isPortable);
+
+        py::class_<IInstanceManager>(m, "IInstanceManager")
+            .def("currentInstance", &IInstanceManager::currentInstance)
+            .def("globalInstancePaths", &IInstanceManager::globalInstancePaths)
+            .def("getGlobalInstance", &IInstanceManager::getGlobalInstance);
+    }
+
     void add_idownload_manager_classes(py::module_ m)
     {
         py::class_<IDownloadManager>(m, "IDownloadManager")
@@ -880,7 +928,7 @@ namespace mo2::python {
 
         // must be done BEFORE imodlist because there is a default argument to a
         // IProfile* in the modlist class
-        py::class_<IProfile>(m, "IProfile")
+        py::class_<IProfile, std::shared_ptr<IProfile>>(m, "IProfile")
             .def("name", &IProfile::name)
             .def("absolutePath", &IProfile::absolutePath)
             .def("localSavesEnabled", &IProfile::localSavesEnabled)
@@ -895,6 +943,7 @@ namespace mo2::python {
 
         add_ipluginlist_classes(m);
         add_imodlist_classes(m);
+        add_iinstance_manager_classes(m);
         add_idownload_manager_classes(m);
         add_iinstallation_manager_classes(m);
         add_iorganizer_classes(m);
