@@ -4,6 +4,20 @@
 <context>
     <name>ProxyPython</name>
     <message>
+        <location filename="proxy/linux/proxypython_linux.cpp" line="49"/>
+        <location filename="proxy/win32/proxypython_win32.cpp" line="62"/>
+        <source>Python Initialization failed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="proxy/linux/proxypython_linux.cpp" line="50"/>
+        <location filename="proxy/win32/proxypython_win32.cpp" line="63"/>
+        <source>On a previous start the Python Plugin failed to initialize.
+Do you want to try initializing python again (at the risk of another crash)?
+ Suggestion: Select &quot;no&quot;, and click the warning sign for further help.Afterwards you have to re-enable the python plugin.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="proxy/proxypython.cpp" line="49"/>
         <source>Python Proxy</source>
         <translation type="unfinished"></translation>
@@ -57,20 +71,6 @@
     <message>
         <location filename="proxy/proxypython.cpp" line="165"/>
         <source>The initialization of the Python plugin DLL failed, unfortunately without any details.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="proxy/linux/proxypython_linux.cpp" line="50"/>
-        <location filename="proxy/win32/proxypython_win32.cpp" line="62"/>
-        <source>Python Initialization failed</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="proxy/linux/proxypython_linux.cpp" line="51"/>
-        <location filename="proxy/win32/proxypython_win32.cpp" line="63"/>
-        <source>On a previous start the Python Plugin failed to initialize.
-Do you want to try initializing python again (at the risk of another crash)?
- Suggestion: Select &quot;no&quot;, and click the warning sign for further help.Afterwards you have to re-enable the python plugin.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
