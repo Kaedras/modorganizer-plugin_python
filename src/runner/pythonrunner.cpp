@@ -171,7 +171,7 @@ namespace mo2::python {
         }
         envString += absolute(dllPath).string();
 
-        py::module_::import("os").attr("putenv")(envString);
+        py::module_::import("os").attr("putenv")("LD_LIBRARY_PATH", envString);
 #endif
     }
 
