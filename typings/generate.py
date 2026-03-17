@@ -19,7 +19,7 @@ if sys.platform == "win32":
 else:
     env_string = os.getenv("LD_LIBRARY_PATH", "")
     if len(env_string) != 0:
-        env_string = env_string + ";"
+        env_string = env_string + ":"
     os.putenv("LD_LIBRARY_PATH", env_string + str(os.getenv("UIBASE_PATH")))
 
 from PyQt6.QtWidgets import QApplication  # noqa: E402

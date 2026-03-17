@@ -167,7 +167,7 @@ namespace mo2::python {
         const char* env = getenv("LD_LIBRARY_PATH");
         std::string envString;
         if (env != nullptr) {
-            envString = std::string(env) + ";";
+            envString = std::string(env) + ":";
         }
         envString += absolute(dllPath).string();
 
