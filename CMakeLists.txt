@@ -4,6 +4,10 @@ cmake_policy(SET CMP0144 NEW)
 
 project(plugin_python CXX)
 
+if(UNIX)
+    find_package(OpenGL REQUIRED)
+endif()
+
 # we need mo2-cmake to obtain the Python version, but mo2-cmake will set
 # CMAKE_MAP_IMPORTED_CONFIG_* which will trigger a tons of CMP0111 warnings for Python
 # below so we need to reset these before finding Python and then reset them after
