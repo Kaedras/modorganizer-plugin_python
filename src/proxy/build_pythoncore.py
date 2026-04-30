@@ -6,7 +6,9 @@ _EXCLUDE_MODULES = ["ensurepip", "idlelib", "test", "tkinter", "turtle_demo", "v
 if sys.platform == "win32":
     libdir = Path(sys.executable).parent.joinpath("Lib")
 else:
-    libdir = Path(f"/lib/python{sys.version_info.major}.{sys.version_info.minor}")
+    import os
+    import inspect
+    libdir = Path(os.path.dirname(inspect.getfile(os)))
 assert libdir.exists()
 
 with zipfile.PyZipFile(sys.argv[1], optimize=2, mode="w") as fp:
