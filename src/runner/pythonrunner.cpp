@@ -4,6 +4,9 @@
 #pragma warning(disable : 4996)
 
 #include <algorithm>
+#ifdef __unix__
+#include <dlfcn.h>
+#endif
 
 #include <QCoreApplication>
 #include <QDir>
@@ -80,6 +83,22 @@ namespace mo2::python {
         try {
 #ifdef __unix__
             static const char* argv0 = "ModOrganizer";
+
+            // promote the python library to RTLD_GLOBAL,
+            // this prevents undefined symbol errors like
+            // "symbol lookup error: undefined symbol: PyExc_ValueError (fatal)"
+            Dl_info info{};
+            if (dladdr(reinterpret_cast<void*>(&Py_Initialize), &info) == 0) {
+                log::error("failed to locate loaded python library, {}", dlerror());
+                return false;
+            }
+
+            void* handle = dlopen(info.dli_fname, RTLD_NOW | RTLD_GLOBAL | RTLD_NOLOAD);
+            if (handle == nullptr) {
+                log::error("failed to promote python library to RTLD_GLOBAL, {}",
+                           dlerror());
+                return false;
+            }
 #else
             static const char* argv0 = "ModOrganizer.exe";
 #endif
