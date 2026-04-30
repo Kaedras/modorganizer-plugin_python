@@ -66,16 +66,6 @@ bool ProxyPython::init(IOrganizer* moInfo)
     if (m_MOInfo) {
         m_MOInfo->setPersistent(name(), "tryInit", true);
     }
-    /*
-    const auto dllPaths = pluginFolder / "dlls";
-    if (SetDllDirectoryW(dllPaths.c_str()) == 0) {
-        DWORD error   = ::GetLastError();
-        m_LoadFailure = FailureType::DLL_NOT_FOUND;
-        log::error("failed to add python DLL directory ({}): {}", error,
-                   qUtf8Printable(windowsErrorString(::GetLastError())));
-        return false;
-    }
-    */
 
     m_Runner = mo2::python::createPythonRunner();
 
@@ -93,9 +83,6 @@ bool ProxyPython::init(IOrganizer* moInfo)
 
     if (!m_Runner || !m_Runner->isInitialized()) {
         m_LoadFailure = FailureType::INITIALIZATION;
-    }
-    else {
-        m_Runner->addDllSearchPath(pluginFolder / "lib");
     }
 
     return true;

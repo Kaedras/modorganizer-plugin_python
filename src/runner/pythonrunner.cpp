@@ -179,18 +179,12 @@ namespace mo2::python {
     }
     void PythonRunner::addDllSearchPath(std::filesystem::path const& dllPath)
     {
-        py::gil_scoped_acquire lock;
 #ifdef _WIN32
+        py::gil_scoped_acquire lock;
         py::module_::import("os").attr("add_dll_directory")(absolute(dllPath));
 #else
-        const char* env = getenv("LD_LIBRARY_PATH");
-        std::string envString;
-        if (env != nullptr) {
-            envString = std::string(env) + ":";
-        }
-        envString += absolute(dllPath).string();
-
-        py::module_::import("os").attr("putenv")("LD_LIBRARY_PATH", envString);
+        // no-op
+        (void)dllPath;
 #endif
     }
 
