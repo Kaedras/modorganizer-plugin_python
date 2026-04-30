@@ -44,10 +44,7 @@ target_include_directories(pybind11-qt PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/includ
 target_compile_definitions(pybind11-qt PUBLIC QT_NO_KEYWORDS)
 
 if(UNIX)
-    set(sip_module "sip-module")
     target_compile_options(pybind11-qt PRIVATE -fPIC)
-else()
-    set(sip_module "sip-module.exe")
 endif()
 
 # we need sip.h for pybind11-qt
@@ -57,7 +54,7 @@ add_custom_command(
 	OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/sip.h"
 	COMMAND
 		${CMAKE_COMMAND} -E env PYTHONPATH=${MO2_PYLIBS_DIR}
-		${MO2_PYLIBS_DIR}/bin/${sip_module}
+		${MO2_PYLIBS_DIR}/bin/sip-module${CMAKE_EXECUTABLE_SUFFIX}
 		--sip-h PyQt${MO2_QT_VERSION_MAJOR}.sip
 		--target-dir ${CMAKE_CURRENT_BINARY_DIR}
 )
