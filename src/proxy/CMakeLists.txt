@@ -60,10 +60,17 @@ if(WIN32)
     install(FILES ${dlls_to_install} DESTINATION ${DLL_DIRS})
 endif()
 
-# install Python .pyd files
-set(PYLIB_DIR ${PLUGIN_PYTHON_DIR}/libs)
-file(GLOB libs_to_install ${Python_DLL_DIR}/*.pyd)
-install(FILES ${libs_to_install} DESTINATION ${PYLIB_DIR})
+if(WIN32)
+    # install Python .pyd files
+    set(PYLIB_DIR ${PLUGIN_PYTHON_DIR}/libs)
+    file(GLOB libs_to_install ${Python_DLL_DIR}/*.pyd)
+    install(FILES ${libs_to_install} DESTINATION ${PYLIB_DIR})
+else()
+    # install Python .so files
+    set(PYLIB_DIR ${PLUGIN_PYTHON_DIR}/libs)
+    file(GLOB libs_to_install ${Python_STDLIB}/lib-dynload/*.so)
+    install(FILES ${libs_to_install} DESTINATION ${PYLIB_DIR})
+endif()
 
 # generate + install standard library
 set(pythoncore_zip "${CMAKE_CURRENT_BINARY_DIR}/pythoncore.zip")
