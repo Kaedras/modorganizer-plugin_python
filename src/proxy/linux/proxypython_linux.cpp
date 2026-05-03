@@ -73,7 +73,8 @@ bool ProxyPython::init(IOrganizer* moInfo)
         const auto libpath = pluginFolder / "libs";
         const std::vector paths{
             libpath / "pythoncore.zip", libpath,
-            std::filesystem::path{IOrganizer::getPluginDataPath().toStdWString()}};
+            std::filesystem::path{IOrganizer::getPluginDataPath().toStdWString()},
+            pluginFolder.parent_path()};
         m_Runner->initialize(paths);
     }
 
