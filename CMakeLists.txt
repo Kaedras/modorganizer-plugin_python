@@ -35,7 +35,7 @@ if (WIN32)
     set(Python_DLL_DIR "${Python_HOME}/DLLs")
     set(Python_LIB_DIR "${Python_HOME}/Lib")
 else()
-    set(Python_HOME "/lib/python${Python_VERSION_MAJOR}.${Python_VERSION_MINOR}")
+    set(Python_HOME "${Python_STDLIB}")
 endif()
 
 mo2_python_install_pyqt()
