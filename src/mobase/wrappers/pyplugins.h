@@ -529,6 +529,10 @@ namespace mo2::python {
         {
             PYBIND11_OVERRIDE_PURE(void, IPluginGame, setPrefixPath, path);
         }
+        bool isNativeLinuxVersion() const override
+        {
+            PYBIND11_OVERRIDE(bool, IPluginGame, isNativeLinuxVersion, );
+        }
 #endif
     };
 
