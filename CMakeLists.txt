@@ -36,6 +36,7 @@ if (WIN32)
     set(Python_LIB_DIR "${Python_HOME}/Lib")
 else()
     set(Python_HOME "${Python_STDLIB}")
+    mo2_create_venv("${CMAKE_BINARY_DIR}/venv")
 endif()
 
 mo2_python_install_pyqt()
