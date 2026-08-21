@@ -4,33 +4,30 @@ cmake_policy(SET CMP0144 NEW)
 
 project(plugin_python CXX)
 
-if(UNIX)
-    find_package(OpenGL REQUIRED)
-endif()
-
-# we need mo2-cmake to obtain the Python version, but mo2-cmake will set
-# CMAKE_MAP_IMPORTED_CONFIG_* which will trigger a tons of CMP0111 warnings for Python
-# below so we need to reset these before finding Python and then reset them after
 find_package(mo2-cmake CONFIG REQUIRED)
 
-set(_CMAKE_MAP_IMPORTED_CONFIG_MINSIZEREL ${CMAKE_MAP_IMPORTED_CONFIG_MINSIZEREL})
-set(_CMAKE_MAP_IMPORTED_CONFIG_RELWITHDEBINFO ${CMAKE_MAP_IMPORTED_CONFIG_RELWITHDEBINFO})
-set(_CMAKE_MAP_IMPORTED_CONFIG_RELEASE ${CMAKE_MAP_IMPORTED_CONFIG_RELEASE})
+if(WIN32)
+    # we need mo2-cmake to obtain the Python version, but mo2-cmake will set
+    # CMAKE_MAP_IMPORTED_CONFIG_* which will trigger a tons of CMP0111 warnings for Python
+    # below so we need to reset these before finding Python and then reset them after
+    set(_CMAKE_MAP_IMPORTED_CONFIG_MINSIZEREL ${CMAKE_MAP_IMPORTED_CONFIG_MINSIZEREL})
+    set(_CMAKE_MAP_IMPORTED_CONFIG_RELWITHDEBINFO ${CMAKE_MAP_IMPORTED_CONFIG_RELWITHDEBINFO})
+    set(_CMAKE_MAP_IMPORTED_CONFIG_RELEASE ${CMAKE_MAP_IMPORTED_CONFIG_RELEASE})
 
-set(CMAKE_MAP_IMPORTED_CONFIG_MINSIZEREL "")
-set(CMAKE_MAP_IMPORTED_CONFIG_RELWITHDEBINFO "")
-set(CMAKE_MAP_IMPORTED_CONFIG_RELEASE "")
-
+    set(CMAKE_MAP_IMPORTED_CONFIG_MINSIZEREL "")
+    set(CMAKE_MAP_IMPORTED_CONFIG_RELWITHDEBINFO "")
+    set(CMAKE_MAP_IMPORTED_CONFIG_RELEASE "")
+endif()
 # find Python before include mo2-cmake, otherwise this will trigger a bunch of CMP0111
 # due to the imported configuration mapping variables defined in mo2.cmake
 find_package(Python ${MO2_PYTHON_VERSION} EXACT COMPONENTS Interpreter Development REQUIRED)
 find_package(pybind11 CONFIG REQUIRED)
 
-set(CMAKE_MAP_IMPORTED_CONFIG_MINSIZEREL ${_CMAKE_MAP_IMPORTED_CONFIG_MINSIZEREL})
-set(CMAKE_MAP_IMPORTED_CONFIG_RELWITHDEBINFO ${_CMAKE_MAP_IMPORTED_CONFIG_RELWITHDEBINFO})
-set(CMAKE_MAP_IMPORTED_CONFIG_RELEASE ${_CMAKE_MAP_IMPORTED_CONFIG_RELEASE})
-
 if (WIN32)
+    set(CMAKE_MAP_IMPORTED_CONFIG_MINSIZEREL ${_CMAKE_MAP_IMPORTED_CONFIG_MINSIZEREL})
+    set(CMAKE_MAP_IMPORTED_CONFIG_RELWITHDEBINFO ${_CMAKE_MAP_IMPORTED_CONFIG_RELWITHDEBINFO})
+    set(CMAKE_MAP_IMPORTED_CONFIG_RELEASE ${_CMAKE_MAP_IMPORTED_CONFIG_RELEASE})
+
     get_filename_component(Python_HOME ${Python_EXECUTABLE} PATH)
     set(Python_DLL_DIR "${Python_HOME}/DLLs")
     set(Python_LIB_DIR "${Python_HOME}/Lib")
