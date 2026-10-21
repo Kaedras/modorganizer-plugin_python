@@ -14,12 +14,12 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ windows-2022, ubuntu-24.04 ]
+        os: [ windows-2022, ubuntu-26.04 ]
         include:
           - os: windows-2022
             build_dir: vsbuild
             target: INSTALL
-          - os: ubuntu-24.04
+          - os: ubuntu-26.04
             build_dir: build
             target: install
 
